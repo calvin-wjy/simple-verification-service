@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use App\Helper;
 
 class VerificationController extends Controller
 {
@@ -11,7 +12,7 @@ class VerificationController extends Controller
     const GOOGLE_DNS_API = 'https://dns.google/resolve?name=%s&type=TXT';
 
     public function verify(Request $request) {
-        $data = $request->json()->all();
+        $data = $request->json()->all()['data'];
         $isRecipientValid = $this->isRecipientValid(isset($data['recipient']) ? $data['recipient'] : null);
         if (!$isRecipientValid) {
             $response = [
@@ -27,6 +28,16 @@ class VerificationController extends Controller
             $response = [
                 'data' => [
                     'result' => 'invalid_issuer',
+                ]
+            ];
+            return response()->json($response, 200);
+        }
+        $signature = $request->json()->all()['signature'];
+        $isSignatureValid = $this->isSignatureValid(isset($signature) ? $signature : null, $data);
+        if (!$isSignatureValid) {
+            $response = [
+                'data' => [
+                    'result' => 'invalid_signature',
                 ]
             ];
             return response()->json($response, 200);
@@ -54,7 +65,11 @@ class VerificationController extends Controller
             return false;
         }
 
-        $areNameAndIdentityProofExists = array_key_exists('name', $issuer) && array_key_exists('identityProof', $issuer);
+        $areNameAndIdentityProofExists = array_key_exists('name', $issuer) &&
+            array_key_exists('identityProof', $issuer) &&
+            array_key_exists('location', $issuer['identityProof']) &&
+            array_key_exists('key', $issuer['identityProof']);
+
         if(!$areNameAndIdentityProofExists) {
             return false;
         }
@@ -74,5 +89,21 @@ class VerificationController extends Controller
         }
 
         return false;
+    }
+
+    private function isSignatureValid(?array $signature, ?array $data) {
+        if ($signature == null || !array_key_exists('targetHash', $signature)) {
+            return false;
+        }
+
+        $flattenedData = flattenJson($data);
+        $result = array();
+        foreach($flattenedData as $key => $value) {
+            array_push($result, hash('sha256', json_encode([$key => $value])));
+        }
+
+        sort($result);
+        $targetHash = hash('sha256', json_encode($result));
+        return $targetHash == $signature['targetHash'];
     }
 }
