@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class VerificationController extends Controller
 {
-    public function verify(Request $request) {
-        $data = $request->all();
 
-        $isRecipientValid = $this->isRecipientValid($data['recipient']);
+    const GOOGLE_DNS_API = 'https://dns.google/resolve?name=%s&type=TXT';
+
+    public function verify(Request $request) {
+        $data = $request->json()->all();
+        $isRecipientValid = $this->isRecipientValid(isset($data['recipient']) ? $data['recipient'] : null);
         if (!$isRecipientValid) {
             $response = [
                 'data' => [
@@ -19,7 +22,15 @@ class VerificationController extends Controller
             return response()->json($response, 200);
         }
 
-
+        $isIssuerValid = $this->isIssuerValid(isset($data['issuer']) ? $data['issuer'] : null);
+        if (!$isIssuerValid) {
+            $response = [
+                'data' => [
+                    'result' => 'invalid_issuer',
+                ]
+            ];
+            return response()->json($response, 200);
+        }
 
         $response = [
             'data' => [
@@ -30,21 +41,38 @@ class VerificationController extends Controller
         return response()->json($response, 200);
     }
     
-    private function isRecipientValid(Request $recipient) {
-        return $recipient->has('name') && $recipient->has('email');
-    }
+    private function isRecipientValid(?array $recipient) {
+        if ($recipient == null) {
+            return false;
+        }
 
-    private function isIssuerValid(Request $issuer) {
-        $areNameAndIdentityProofExists = $issuer->has('name') && $issuer->has('identityProof');
+        return array_key_exists('name', $recipient) && array_key_exists('email', $recipient);
+    }
+    
+    private function isIssuerValid(?array $issuer) {
+        if ($issuer == null) {
+            return false;
+        }
+
+        $areNameAndIdentityProofExists = array_key_exists('name', $issuer) && array_key_exists('identityProof', $issuer);
         if(!$areNameAndIdentityProofExists) {
             return false;
         }
 
-        // TODO calvin: hit Google DNS' API to check if
-        // issuer.identityProof.key is found in DNS TXT record of the domain name specified by
-        // issuer.identityProof.location
+        $issuerLocation = $issuer['identityProof']['location'];
+        $issuerKey = $issuer['identityProof']['key'];
+        
+        // Hit google DNS API and check if the issuer key is present in the TXT record
+        $client = new Client();
+        $response = $client->get(sprintf(self::GOOGLE_DNS_API, $issuerLocation));
+        $data = json_decode($response->getBody(), true);
+        foreach($data['Answer'] as $answer) {
+            // check if the issuer key is present in the TXT record
+            if (strpos($answer['data'], $issuerKey) !== false) {
+                return true;
+            }
+        }
 
-        // e.g. https://dns.google/resolve?name=ropstore.accredify.io&type=TXT
-
+        return false;
     }
 }
