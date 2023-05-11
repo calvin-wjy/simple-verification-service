@@ -8,6 +8,24 @@ use App\Helper;
 use Illuminate\Support\Facades\Auth;
 use App\Models\VerificationResult;
 
+/**
+ * @OA\Get(
+ *     path="/verify",
+ *     tags={"VerificationController"},
+ *     summary="Returns a Sample API response",
+ *     description="A sample verification to test out the API",
+ *     operationId="verify",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(ref="#/components/schemas/VerificationResult")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Successful",
+ *         @OA\JsonContent()
+ *     )
+ * )
+ */
 class VerificationController extends Controller
 {
 
