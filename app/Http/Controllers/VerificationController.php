@@ -5,21 +5,33 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Helper;
+use Illuminate\Support\Facades\Auth;
+use App\Models\VerificationResult;
 
 class VerificationController extends Controller
 {
 
     const GOOGLE_DNS_API = 'https://dns.google/resolve?name=%s&type=TXT';
+    const INVALID_RECIPIENT = 'invalid_recipient';
+    const INVALID_ISSUER = 'invalid_issuer';
+    const INVALID_SIGNATURE = 'invalid_signature';
+    const VERIFIED = 'verified';
 
     public function verify(Request $request) {
+        $userId = Auth::id();
+
         $data = $request->json()->all()['data'];
         $isRecipientValid = $this->isRecipientValid(isset($data['recipient']) ? $data['recipient'] : null);
         if (!$isRecipientValid) {
             $response = [
                 'data' => [
-                    'result' => 'invalid_recipient',
+                    'result' => self::INVALID_RECIPIENT,
                 ]
             ];
+            $this->insertVerificationResultToDB(
+                $userId,
+                self::INVALID_RECIPIENT,
+            );
             return response()->json($response, 200);
         }
 
@@ -27,9 +39,13 @@ class VerificationController extends Controller
         if (!$isIssuerValid) {
             $response = [
                 'data' => [
-                    'result' => 'invalid_issuer',
+                    'result' => self::INVALID_ISSUER,
                 ]
             ];
+            $this->insertVerificationResultToDB(
+                $userId,
+                self::INVALID_ISSUER,
+            );
             return response()->json($response, 200);
         }
         $signature = $request->json()->all()['signature'];
@@ -37,18 +53,26 @@ class VerificationController extends Controller
         if (!$isSignatureValid) {
             $response = [
                 'data' => [
-                    'result' => 'invalid_signature',
+                    'result' => self::INVALID_SIGNATURE,
                 ]
             ];
+            $this->insertVerificationResultToDB(
+                $userId,
+                self::INVALID_SIGNATURE,
+            );
             return response()->json($response, 200);
         }
 
         $response = [
             'data' => [
                 'issuer' => 'Accredify',
-                'result' => 'verified',
+                'result' => self::VERIFIED,
             ]
         ];
+        $this->insertVerificationResultToDB(
+            $userId,
+            self::VERIFIED,
+        );
         return response()->json($response, 200);
     }
     
@@ -105,5 +129,17 @@ class VerificationController extends Controller
         sort($result);
         $targetHash = hash('sha256', json_encode($result));
         return $targetHash == $signature['targetHash'];
+    }
+
+    private function insertVerificationResultToDB(
+        ?int $userId,
+        string $result,
+        string $fileType = 'json',
+    ) {
+        $verificationResult = new VerificationResult();
+        $verificationResult->user_id = $userId;
+        $verificationResult->file_type = $fileType;
+        $verificationResult->verification_result = $result;
+        $verificationResult->save();
     }
 }
