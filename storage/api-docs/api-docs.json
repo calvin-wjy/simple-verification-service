@@ -1,10 +1,9 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Laravel OpenApi Demo Documentation",
-        "description": "L5 Swagger OpenApi description",
+        "title": "Simple Verification Service API Documentation",
         "contact": {
-            "email": "admin@admin.com"
+            "email": "calvinwijaya.008@gmail.com"
         },
         "license": {
             "name": "Apache 2.0",

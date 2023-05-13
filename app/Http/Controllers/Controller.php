@@ -9,10 +9,9 @@ use Illuminate\Routing\Controller as BaseController;
 /**
  * @OA\Info(
  *      version="1.0.0",
- *      title="Laravel OpenApi Demo Documentation",
- *      description="L5 Swagger OpenApi description",
+ *      title="Simple Verification Service API Documentation",
  *      @OA\Contact(
- *          email="admin@admin.com"
+ *          email="calvinwijaya.008@gmail.com"
  *      ),
  *      @OA\License(
  *          name="Apache 2.0",
