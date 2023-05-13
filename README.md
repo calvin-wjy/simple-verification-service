@@ -28,4 +28,4 @@ git clone git@github.com:calvin-wjy/simple-verification-service.git
   <img width="301" alt="Screen Shot 2023-05-13 at 15 28 52" src="https://github.com/calvin-wjy/simple-verification-service/assets/90295805/1277933f-73e4-40a3-b280-9166c356059f">
 - Code Coverage
   - Run `./vendor/bin/pest --coverage`
-  - 
+  <img width="1594" alt="Screen Shot 2023-05-13 at 15 42 25" src="https://github.com/calvin-wjy/simple-verification-service/assets/90295805/2fdd6f3a-e22f-499d-a8bd-1bdd766b48dd">
