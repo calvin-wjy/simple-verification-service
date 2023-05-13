@@ -119,6 +119,7 @@ class VerificationController extends Controller
         $issuerLocation = $issuer['identityProof']['location'];
         $issuerKey = $issuer['identityProof']['key'];
         
+        // TODO: add error handling
         // Hit google DNS API and check if the issuer key is present in the TXT record
         $client = new Client();
         $response = $client->get(sprintf(self::GOOGLE_DNS_API, $issuerLocation));
