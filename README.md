@@ -29,3 +29,6 @@ git clone git@github.com:calvin-wjy/simple-verification-service.git
 - Code Coverage
   - Run `./vendor/bin/pest --coverage`
   <img width="1594" alt="Screen Shot 2023-05-13 at 15 42 25" src="https://github.com/calvin-wjy/simple-verification-service/assets/90295805/2fdd6f3a-e22f-499d-a8bd-1bdd766b48dd">
+- API Documentation
+  - Can be accessed through `localhost:8000/api/documentation`
+  - 
