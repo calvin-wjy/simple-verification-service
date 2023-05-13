@@ -22,7 +22,10 @@ git clone git@github.com:calvin-wjy/simple-verification-service.git
 
 ## How to test
 - Go to project's directory and run `php artisan serve`
-- Download Postman collection this [postman collection](https://github.com/calvin-wjy/simple-verification-service/blob/master/Verification%20API.postman_collection.json) and import it to Postman
-- Try to hit with different requests
-<img width="301" alt="Screen Shot 2023-05-13 at 15 28 52" src="https://github.com/calvin-wjy/simple-verification-service/assets/90295805/1277933f-73e4-40a3-b280-9166c356059f">
-
+- Verification API
+  - Download Postman collection this [postman collection](https://github.com/calvin-wjy/simple-verification-service/blob/master/Verification%20API.postman_collection.json) and import it to Postman
+  - Try to hit with different requests
+  <img width="301" alt="Screen Shot 2023-05-13 at 15 28 52" src="https://github.com/calvin-wjy/simple-verification-service/assets/90295805/1277933f-73e4-40a3-b280-9166c356059f">
+- Code Coverage
+  - Run `./vendor/bin/pest --coverage`
+  - 
