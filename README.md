@@ -22,5 +22,6 @@ git clone git@github.com:calvin-wjy/simple-verification-service.git
 
 ## How to test
 - Go to project's directory and run `php artisan serve`
-- Download postman collection [here](https://calvin-wjy.github.io/simple-verification-service/blob/master/Verification%20API.postman_collection.json)
-- Import it, then try to hit with different requests
+- Download Postman collection this [postman collection](https://github.com/calvin-wjy/simple-verification-service/blob/master/Verification%20API.postman_collection.json) and import it to Postman
+- Try to hit with different requests
+- 
