@@ -17,12 +17,12 @@ use App\Models\VerificationResult;
  *     operationId="verify",
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(ref="#/components/schemas/VerificationResult")
+ *         @OA\JsonContent(ref="#/components/schemas/VerificationRequest")
  *     ),
  *     @OA\Response(
  *         response=200,
  *         description="Successful",
- *         @OA\JsonContent()
+ *         @OA\JsonContent(ref="#/components/schemas/VerificationResult")
  *     )
  * )
  */

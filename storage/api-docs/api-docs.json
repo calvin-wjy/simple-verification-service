@@ -31,7 +31,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/VerificationResult"
+                                "$ref": "#/components/schemas/VerificationRequest"
                             }
                         }
                     }
@@ -41,7 +41,9 @@
                         "description": "Successful",
                         "content": {
                             "application/json": {
-                                "schema": {}
+                                "schema": {
+                                    "$ref": "#/components/schemas/VerificationResult"
+                                }
                             }
                         }
                     }
@@ -52,18 +54,97 @@
     "components": {
         "schemas": {
             "VerificationRequest": {
-                "title": "VerificationRequest",
-                "description": "VerificationRequest model",
-                "xml": {
-                    "name": "VerificationRequest"
-                }
+                "required": [
+                    "data",
+                    "signature"
+                ],
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "recipient": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "issuer": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "identityProof": {
+                                        "properties": {
+                                            "type": {
+                                                "type": "string"
+                                            },
+                                            "key": {
+                                                "type": "string"
+                                            },
+                                            "location": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "issued": {
+                                "type": "string",
+                                "format": "date-time"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "signature": {
+                        "properties": {
+                            "type": {
+                                "type": "string"
+                            },
+                            "targetHash": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
             },
             "VerificationResult": {
-                "title": "VerificationResult",
-                "description": "VerificationResult model",
-                "xml": {
-                    "name": "VerificationResult"
-                }
+                "required": [
+                    "data"
+                ],
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "issuer": {
+                                "type": "string"
+                            },
+                            "result": {
+                                "type": "string",
+                                "enum": [
+                                    "verified",
+                                    "invalid_recipient",
+                                    "invalid_issuer",
+                                    "invalid_signature"
+                                ]
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
             }
         }
     },

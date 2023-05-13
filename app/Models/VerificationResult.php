@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @OA\Schema(
- *    title="VerificationResult",
- *    description="VerificationResult model",
- *    @OA\Xml(
- *       name="VerificationResult"
- *   )
+ *     schema="VerificationResult",
+ *     required={"data"},
+ *     @OA\Property(
+ *         property="data",
+ *         type="object",
+ *         @OA\Property(property="issuer", type="string"),
+ *         @OA\Property(property="result", type="string", enum={"verified", "invalid_recipient", "invalid_issuer", "invalid_signature"})
+ *     )
  * )
  */
 class VerificationResult extends Model
