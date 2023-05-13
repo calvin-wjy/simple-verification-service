@@ -17,8 +17,10 @@ git clone git@github.com:calvin-wjy/simple-verification-service.git
   - Replace `password` with password in .env (copy .env.example for reference) file
   - Execute ```docker exec -it some-postgres bash```
   - Once inside the container, execute ```psql -U postgres```
-  - Create DB by executing, ```CREATE DATABASE <DB_DATABASE>``` (replace DB_DATABASE with value in .env file)
+  - Create DB by executing ```CREATE DATABASE <DB_DATABASE>``` (replace DB_DATABASE with value in .env file)
+  - After DB is created, in terminal go to project's working directory and execute ```php artisan migrate```. If done correctly, terminal show the database and table being created.
 
-TODO: Add getting started
-TODO: Add code coverage
-TODO: Add roadmap
+## How to test
+- Go to project's directory and run `php artisan serve`
+- Download postman collection [here](https://calvin-wjy.github.io/simple-verification-service/blob/master/Verification%20API.postman_collection.json)
+- Import it, then try to hit with different requests
